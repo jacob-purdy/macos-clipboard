@@ -82,6 +82,109 @@ final class HistoryItemView: NSTableCellView {
     }
 }
 
+// MARK: - MediaHistoryItemView
+
+/// Table cell view for image and file-URL clipboard entries.
+///
+/// Layout (left → right):
+///   [40×40 thumbnail]  [preview text (top)]
+///                      [source app name (bottom, dimmed)]
+final class MediaHistoryItemView: NSTableCellView {
+
+    // MARK: - Views
+
+    private let thumbnailView: NSImageView = {
+        let iv = NSImageView()
+        iv.imageScaling  = .scaleProportionallyUpOrDown
+        iv.wantsLayer    = true
+        iv.layer?.cornerRadius  = 4
+        iv.layer?.masksToBounds = true
+        return iv
+    }()
+
+    private let previewLabel: NSTextField = {
+        let f = NSTextField(labelWithString: "")
+        f.textColor            = .labelColor
+        f.font                 = .systemFont(ofSize: 12, weight: .regular)
+        f.lineBreakMode        = .byTruncatingMiddle
+        f.maximumNumberOfLines = 1
+        return f
+    }()
+
+    private let sourceLabel: NSTextField = {
+        let f = NSTextField(labelWithString: "")
+        f.textColor            = .tertiaryLabelColor
+        f.font                 = .systemFont(ofSize: 10)
+        f.lineBreakMode        = .byTruncatingTail
+        f.maximumNumberOfLines = 1
+        return f
+    }()
+
+    private lazy var textStack: NSStackView = {
+        let sv = NSStackView(views: [previewLabel, sourceLabel])
+        sv.orientation = .vertical
+        sv.spacing     = 2
+        sv.alignment   = .leading
+        return sv
+    }()
+
+    // MARK: - Init
+
+    init(identifier: NSUserInterfaceItemIdentifier) {
+        super.init(frame: .zero)
+        self.identifier = identifier
+        buildLayout()
+    }
+
+    required init?(coder: NSCoder) { fatalError("Use init(identifier:)") }
+
+    // MARK: - Layout
+
+    private func buildLayout() {
+        [thumbnailView, textStack].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            addSubview($0)
+        }
+
+        NSLayoutConstraint.activate([
+            // Thumbnail — 40×40, left edge, vertically centred
+            thumbnailView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+            thumbnailView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            thumbnailView.widthAnchor.constraint(equalToConstant: 40),
+            thumbnailView.heightAnchor.constraint(equalToConstant: 40),
+
+            // Text stack — fills the remaining width
+            textStack.leadingAnchor.constraint(equalTo: thumbnailView.trailingAnchor, constant: 8),
+            textStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            textStack.centerYAnchor.constraint(equalTo: centerYAnchor),
+        ])
+    }
+
+    // MARK: - Configure
+
+    func configure(with item: ClipboardItem) {
+        previewLabel.stringValue = item.preview
+        sourceLabel.stringValue  = item.sourceAppName ?? ""
+
+        switch item.type {
+        case .image:
+            if let data = item.imageData {
+                thumbnailView.image = NSImage(data: data)
+            } else {
+                thumbnailView.image = NSImage(systemSymbolName: "photo", accessibilityDescription: nil)
+            }
+        case .fileURL:
+            if let url = item.fileURL {
+                thumbnailView.image = NSWorkspace.shared.icon(forFile: url.path)
+            } else {
+                thumbnailView.image = NSImage(systemSymbolName: "doc", accessibilityDescription: nil)
+            }
+        default:
+            thumbnailView.image = nil
+        }
+    }
+}
+
 // MARK: - HistoryRowView
 
 /// Custom row view that applies a rounded, semi-transparent selection

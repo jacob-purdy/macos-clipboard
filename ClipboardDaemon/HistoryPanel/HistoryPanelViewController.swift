@@ -152,14 +152,30 @@ extension HistoryPanelViewController: NSTableViewDelegate {
         viewFor tableColumn: NSTableColumn?,
         row: Int
     ) -> NSView? {
-        let id   = NSUserInterfaceItemIdentifier("HistoryItemView")
-        let cell = tableView.makeView(withIdentifier: id, owner: nil) as? HistoryItemView
-                   ?? HistoryItemView(identifier: id)
-        cell.configure(with: items[row])
-        return cell
+        let item = items[row]
+        switch item.type {
+        case .image, .fileURL:
+            let id   = NSUserInterfaceItemIdentifier("MediaHistoryItemView")
+            let cell = tableView.makeView(withIdentifier: id, owner: nil) as? MediaHistoryItemView
+                       ?? MediaHistoryItemView(identifier: id)
+            cell.configure(with: item)
+            return cell
+        case .plainText, .richText:
+            let id   = NSUserInterfaceItemIdentifier("HistoryItemView")
+            let cell = tableView.makeView(withIdentifier: id, owner: nil) as? HistoryItemView
+                       ?? HistoryItemView(identifier: id)
+            cell.configure(with: item)
+            return cell
+        }
     }
 
-    func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat { 36 }
+    func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
+        guard row < items.count else { return 36 }
+        switch items[row].type {
+        case .image, .fileURL: return 48
+        case .plainText, .richText: return 36
+        }
+    }
 
     func tableView(_ tableView: NSTableView, rowViewForRow row: Int) -> NSTableRowView? {
         HistoryRowView()

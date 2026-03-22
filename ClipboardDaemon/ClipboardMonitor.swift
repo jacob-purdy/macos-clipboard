@@ -111,19 +111,24 @@ final class ClipboardMonitor {
             )
         }
 
-        // --- Plain text ---
-        if enabled.contains(.plainText),
-           let text = pb.string(forType: .string), !text.isEmpty {
+        // --- File URL ---
+        // Checked before plain text so that Finder file copies are captured
+        // as file URLs rather than as the filename string.
+        if enabled.contains(.fileURL),
+           let urls = pb.readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL],
+           let first = urls.first {
             return ClipboardItem(
-                id: UUID(), type: .plainText,
-                plainText: text, rtfData: nil,
-                imageData: nil, fileURL: nil,
+                id: UUID(), type: .fileURL,
+                plainText: nil, rtfData: nil,
+                imageData: nil, fileURL: first,
                 timestamp: Date(),
                 sourceAppBundleID: sourceID, sourceAppName: sourceName
             )
         }
 
         // --- Image (TIFF preferred, PNG fallback) ---
+        // Checked before plain text so copied images are not lost to any
+        // incidental string representation some apps put on the pasteboard.
         if enabled.contains(.image),
            let data = pb.data(forType: .tiff) ?? pb.data(forType: .png) {
             return ClipboardItem(
@@ -135,14 +140,13 @@ final class ClipboardMonitor {
             )
         }
 
-        // --- File URL ---
-        if enabled.contains(.fileURL),
-           let urls = pb.readObjects(forClasses: [NSURL.self], options: nil) as? [URL],
-           let first = urls.first {
+        // --- Plain text ---
+        if enabled.contains(.plainText),
+           let text = pb.string(forType: .string), !text.isEmpty {
             return ClipboardItem(
-                id: UUID(), type: .fileURL,
-                plainText: nil, rtfData: nil,
-                imageData: nil, fileURL: first,
+                id: UUID(), type: .plainText,
+                plainText: text, rtfData: nil,
+                imageData: nil, fileURL: nil,
                 timestamp: Date(),
                 sourceAppBundleID: sourceID, sourceAppName: sourceName
             )
