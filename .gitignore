@@ -1,0 +1,32 @@
+# Xcode
+*.xcuserstate
+*.xcuserdatad/
+xcuserdata/
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Build output
+build/
+DerivedData/
+*.pbxuser
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# CocoaPods
+Pods/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Temp source files
+*.orig

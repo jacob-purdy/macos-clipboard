@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!--
+        Sandboxing is disabled for the same reasons as the daemon:
+        posting Darwin notifications cross-process and launching another .app
+        both work without restriction outside the sandbox.
+    -->
+    <key>com.apple.security.app-sandbox</key>
+    <false/>
+</dict>
+</plist>

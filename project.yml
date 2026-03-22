@@ -1,0 +1,72 @@
+name: ClipboardHistory
+
+options:
+  bundleIdPrefix: com.clipboardhistory
+  deploymentTarget:
+    macOS: "13.0"
+  createIntermediateGroups: true
+  xcodeVersion: "15"
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MACOSX_DEPLOYMENT_TARGET: "13.0"
+    ENABLE_HARDENED_RUNTIME: YES
+
+targets:
+
+  # ─── Background clipboard daemon ───────────────────────────────────────────
+  # LSUIElement = YES keeps this out of the Dock and menu bar.
+  # Requires Accessibility permission to simulate ⌘V into other apps.
+  ClipboardDaemon:
+    type: application
+    platform: macOS
+    sources:
+      - path: ClipboardDaemon
+        excludes:
+          - "**/*.entitlements"
+          - "Info.plist"
+      - path: Shared
+    info:
+      path: ClipboardDaemon/Info.plist
+      properties:
+        # Hide from Dock and menu bar — runs invisibly in the background.
+        LSUIElement: true
+        # Shown in System Settings → Privacy & Security → Accessibility.
+        NSAccessibilityUsageDescription: "ClipboardHistory needs Accessibility access to paste clipboard items into other apps."
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.clipboardhistory.daemon
+        CODE_SIGN_ENTITLEMENTS: ClipboardDaemon/ClipboardDaemon.entitlements
+      debug:
+        DEBUG_INFORMATION_FORMAT: dwarf
+      release:
+        DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
+
+  # ─── Settings application ──────────────────────────────────────────────────
+  # Normal .app; user launches it from the Applications folder.
+  # Quits when its window is closed.
+  ClipboardSettings:
+    type: application
+    platform: macOS
+    sources:
+      - path: ClipboardSettings
+        excludes:
+          - "**/*.entitlements"
+          - "Info.plist"
+      - path: Shared
+    resources:
+      - path: ClipboardSettings/AppIcon.icns
+    info:
+      path: ClipboardSettings/Info.plist
+      properties:
+        NSQuitAlwaysKeepsWindows: false
+        CFBundleIconFile: AppIcon
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.clipboardhistory.settings
+        CODE_SIGN_ENTITLEMENTS: ClipboardSettings/ClipboardSettings.entitlements
+      debug:
+        DEBUG_INFORMATION_FORMAT: dwarf
+      release:
+        DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
