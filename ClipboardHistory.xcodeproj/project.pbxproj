@@ -179,8 +179,6 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1500;
-				TargetAttributes = {
-				};
 			};
 			buildConfigurationList = 89EFCD6C2A9E62E7926E01C2 /* Build configuration list for PBXProject "ClipboardHistory" */;
 			developmentRegion = en;
@@ -257,7 +255,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ClipboardDaemon/ClipboardDaemon.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				COMBINE_HIDPI_IMAGES = YES;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = CZ4J7YSW3S;
 				INFOPLIST_FILE = ClipboardDaemon/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -331,6 +331,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ClipboardSettings/ClipboardSettings.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = CZ4J7YSW3S;
 				INFOPLIST_FILE = ClipboardSettings/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

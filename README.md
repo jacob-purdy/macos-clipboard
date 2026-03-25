@@ -11,6 +11,8 @@ A lightweight macOS clipboard history manager that lives quietly in the backgrou
 - **Clipboard history** — stores your last 10 copied items (text, rich text, images, and files)
 - **Instant access** — press `⌘⌥V` to open a floating panel over any app
 - **Paste directly** — select an item and it pastes immediately into your focused app
+- **Scrollable history** — panel scrolls when history exceeds the visible list
+- **Easy dismissal** — panel closes on selection, Escape, or clicking outside it
 - **App exclusions** — ignore copies from specific apps (e.g. password managers)
 - **Capture filters** — choose which content types to capture
 - **Launch at Login** — optionally start automatically on every login
