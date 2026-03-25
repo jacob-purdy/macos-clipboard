@@ -18,7 +18,7 @@ A lightweight macOS clipboard history manager that lives quietly in the backgrou
 - **Launch at Login** — optionally start automatically on every login
 - **Customisable hotkey** — set your own keyboard shortcut in Settings
 - **Panel position** — near cursor, bottom-left, or bottom-right
-- **Dark vibrancy UI** — blends naturally with macOS
+- **Appearance** — Dark (default), Light, or Match system preference
 
 ---
 
@@ -76,6 +76,7 @@ Build and run each target separately in Xcode:
 | Paste immediately | Auto-paste into the previously focused app on selection |
 | Preserve history | Reload history after daemon restarts (off by default) |
 | Launch at Login | Start the daemon automatically on login |
+| Appearance | Dark (default), Light, or Match system preference |
 | Capture types | Toggle plain text, rich text, images, and file references |
 | Exclusions | Browse to add apps whose copies are ignored |
 
