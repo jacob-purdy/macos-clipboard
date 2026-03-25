@@ -57,6 +57,7 @@ final class HistoryPanel: NSPanel {
 
     /// Populate the list and show the panel at the appropriate position.
     func present(items: [ClipboardItem], onSelect: @escaping (ClipboardItem) -> Void) {
+        self.appearance = SharedDefaults.appearanceMode.nsAppearance
         self.onSelect = onSelect
         contentVC.reload(items: items)
         position()

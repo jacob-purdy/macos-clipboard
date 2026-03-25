@@ -8,6 +8,7 @@ final class GeneralSettingsViewController: NSViewController {
 
     private let hotkeyCaptureView = HotkeyCaptureView()
 
+    private let appearancePopup = NSPopUpButton()
     private let positionPopup = NSPopUpButton()
 
     private let limitStepper    = NSStepper()
@@ -42,6 +43,7 @@ final class GeneralSettingsViewController: NSViewController {
     // MARK: - Control configuration
 
     private func configureControls() {
+        appearancePopup.addItems(withTitles: AppearanceMode.allCases.map(\.displayName))
         positionPopup.addItems(withTitles: PanelPosition.allCases.map(\.rawValue))
 
         limitStepper.minValue  = 5
@@ -66,6 +68,7 @@ final class GeneralSettingsViewController: NSViewController {
 
         stack.addArrangedSubview(row("Global hotkey",   control: hotkeyCaptureView))
         stack.addArrangedSubview(row("Panel position",  control: positionPopup))
+        stack.addArrangedSubview(row("Appearance",      control: appearancePopup))
         stack.addArrangedSubview(row("History limit",   control: limitRow))
         stack.addArrangedSubview(pasteToggle)
         stack.addArrangedSubview(persistToggle)
@@ -109,6 +112,7 @@ final class GeneralSettingsViewController: NSViewController {
 
     private func loadValues() {
         hotkeyCaptureView.refreshLabel()
+        appearancePopup.selectItem(withTitle: SharedDefaults.appearanceMode.displayName)
         positionPopup.selectItem(withTitle: SharedDefaults.panelPosition.rawValue)
         limitStepper.integerValue    = SharedDefaults.historyLimit
         limitValueLabel.integerValue = SharedDefaults.historyLimit
@@ -128,6 +132,7 @@ final class GeneralSettingsViewController: NSViewController {
         persistToggle.target = self; persistToggle.action = #selector(togglePersist(_:))
         startButton.target   = self; startButton.action   = #selector(startClipboard)
         limitStepper.target  = self; limitStepper.action  = #selector(stepperChanged(_:))
+        appearancePopup.target = self; appearancePopup.action = #selector(appearanceChanged(_:))
         positionPopup.target = self; positionPopup.action = #selector(positionChanged(_:))
         restartButton.target = self; restartButton.action = #selector(restartDaemon)
         quitButton.target    = self; quitButton.action    = #selector(quitDaemon)
@@ -158,6 +163,15 @@ final class GeneralSettingsViewController: NSViewController {
     @objc private func stepperChanged(_ sender: NSStepper) {
         SharedDefaults.historyLimit      = sender.integerValue
         limitValueLabel.integerValue     = sender.integerValue
+        notifyConfigChanged()
+    }
+
+    @objc private func appearanceChanged(_ sender: NSPopUpButton) {
+        let selected = AppearanceMode.allCases.first {
+            $0.displayName == sender.titleOfSelectedItem
+        } ?? .dark
+        SharedDefaults.appearanceMode = selected
+        NSApp.appearance = selected.nsAppearance
         notifyConfigChanged()
     }
 

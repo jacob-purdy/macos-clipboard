@@ -10,6 +10,7 @@ final class SettingsAppDelegate: NSObject, NSApplicationDelegate {
     private var windowController: SettingsWindowController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        NSApp.appearance = SharedDefaults.appearanceMode.nsAppearance
         windowController = SettingsWindowController()
         windowController?.showWindow(nil)
         // Bring the app to the front so the settings window is immediately visible.

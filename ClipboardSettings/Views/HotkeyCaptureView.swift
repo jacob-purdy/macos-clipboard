@@ -111,15 +111,30 @@ final class HotkeyCaptureView: NSView {
     }
 
     private func setNormalAppearance() {
-        layer?.borderColor      = NSColor.separatorColor.cgColor
-        layer?.backgroundColor  = NSColor.controlBackgroundColor.cgColor
-        label.textColor         = .labelColor
+        withEffectiveAppearance {
+            layer?.borderColor     = NSColor.separatorColor.cgColor
+            layer?.backgroundColor = NSColor.controlBackgroundColor.cgColor
+        }
+        label.textColor = .labelColor
     }
 
     private func setRecordingAppearance() {
-        layer?.borderColor      = NSColor.controlAccentColor.cgColor
-        layer?.backgroundColor  = NSColor.controlAccentColor.withAlphaComponent(0.08).cgColor
-        label.textColor         = .controlAccentColor
+        withEffectiveAppearance {
+            layer?.borderColor     = NSColor.controlAccentColor.cgColor
+            layer?.backgroundColor = NSColor.controlAccentColor.withAlphaComponent(0.08).cgColor
+        }
+        label.textColor = .controlAccentColor
+    }
+
+    /// Temporarily makes the view's effective appearance current so CGColor
+    /// values resolve correctly for the active light/dark mode.
+    private func withEffectiveAppearance(_ block: () -> Void) {
+        effectiveAppearance.performAsCurrentDrawingAppearance(block)
+    }
+
+    override func viewDidChangeEffectiveAppearance() {
+        super.viewDidChangeEffectiveAppearance()
+        isRecording ? setRecordingAppearance() : setNormalAppearance()
     }
 
     // MARK: - Conversion

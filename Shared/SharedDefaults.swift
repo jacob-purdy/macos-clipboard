@@ -1,4 +1,29 @@
-import Foundation
+import AppKit
+
+// MARK: - Appearance mode
+
+/// Controls which NSAppearance is applied to the panel and settings window.
+enum AppearanceMode: String, CaseIterable {
+    case dark   = "dark"
+    case system = "system"
+    case light  = "light"
+
+    var displayName: String {
+        switch self {
+        case .dark:   return "Dark"
+        case .system: return "Match system preference"
+        case .light:  return "Light"
+        }
+    }
+
+    var nsAppearance: NSAppearance? {
+        switch self {
+        case .dark:   return NSAppearance(named: .darkAqua)
+        case .light:  return NSAppearance(named: .aqua)
+        case .system: return nil
+        }
+    }
+}
 
 // MARK: - Panel position
 
@@ -53,6 +78,7 @@ struct SharedDefaults {
         static let pasteImmediate = "pasteImmediately"
         static let savedHistory   = "savedHistory"
         static let launchAtLogin  = "launchAtLogin"
+        static let appearanceMode = "appearanceMode"
     }
 
     // MARK: - Capture types
@@ -139,6 +165,14 @@ struct SharedDefaults {
         set { store.set(newValue, forKey: Key.pasteImmediate) }
     }
 
+    // MARK: - Appearance
+
+    /// The appearance applied to the panel and settings window. Default: dark.
+    static var appearanceMode: AppearanceMode {
+        get { AppearanceMode(rawValue: store.string(forKey: Key.appearanceMode) ?? "") ?? .dark }
+        set { store.set(newValue.rawValue, forKey: Key.appearanceMode) }
+    }
+
     // MARK: - Launch at login
 
     /// Whether the daemon registers itself as a login item. Default: false.
@@ -153,7 +187,7 @@ struct SharedDefaults {
     static func resetToDefaults() {
         [Key.captureTypes, Key.excludedIDs, Key.hotkeyKeyCode, Key.hotkeyMods,
          Key.panelPosition, Key.historyLimit, Key.persistHistory,
-         Key.pasteImmediate, Key.savedHistory, Key.launchAtLogin]
+         Key.pasteImmediate, Key.savedHistory, Key.launchAtLogin, Key.appearanceMode]
             .forEach { store.removeObject(forKey: $0) }
     }
 

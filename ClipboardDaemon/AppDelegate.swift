@@ -55,6 +55,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         pasteManager     = PasteManager()
         clipboardMonitor = ClipboardMonitor()
         historyPanel     = HistoryPanel()
+        applyAppearance()
         hotkeyManager    = HotkeyManager { [weak self] in
             self?.presentHistoryPanel()
         }
@@ -98,6 +99,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self?.hotkeyManager.reregister()
             self?.clipboardMonitor.reloadConfig()
             self?.applyLaunchAtLogin()
+            self?.applyAppearance()
         }
         observe(DarwinNotification.quitDaemon) { [weak self] in
             self?.gracefulQuit()
@@ -106,6 +108,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             // The Settings app will relaunch us; we just need to quit cleanly.
             self?.gracefulQuit()
         }
+    }
+
+    private func applyAppearance() {
+        let appearance = SharedDefaults.appearanceMode.nsAppearance
+        NSApp.appearance       = appearance
+        historyPanel.appearance = appearance
     }
 
     private func applyLaunchAtLogin() {

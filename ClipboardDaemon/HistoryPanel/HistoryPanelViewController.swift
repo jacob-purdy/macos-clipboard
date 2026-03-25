@@ -19,7 +19,7 @@ final class HistoryPanelViewController: NSViewController {
 
     private lazy var blur: NSVisualEffectView = {
         let v = NSVisualEffectView()
-        v.material      = .hudWindow          // dark vibrancy that blends with macOS
+        v.material      = .popover             // adapts to system light/dark appearance
         v.blendingMode  = .behindWindow
         v.state         = .active
         v.wantsLayer    = true
